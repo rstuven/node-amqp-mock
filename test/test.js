@@ -16,8 +16,10 @@ describe('amqp-mock', function(){
                 connection = amqp.createConnection();
 
             scope
-                .publish('exch1', 'rout', "test 1")
-                .publish('exch2', 'rout', "test 2")
+                .exchange('exch1')
+                    .publish('rout', "test 1")
+                .exchange('exch2')
+                    .publish('rout', "test 2")
                 ;
 
             connection.on('ready', function(){
@@ -55,9 +57,10 @@ describe('amqp-mock', function(){
                 connection = amqp.createConnection();
 
             scope
-                .publish('exch', 'rout1', "test 1")
-                .publish('exch', 'rout2', "test 2")
-                .publish('exch', 'rout3', "test 3")
+                .exchange('exch')
+                    .publish('rout1', "test 1")
+                    .publish('rout2', "test 2")
+                    .publish('rout3', "test 3")
                 ;
 
             connection.on('ready', function(){
@@ -98,9 +101,10 @@ describe('amqp-mock', function(){
                 connection = amqp.createConnection();
 
             scope
-                .publish('exch', 'rout1', "test 1")
-                .publish('exch', 'rout2', "test 2")
-                .publish('exch', 'rout3', "test 3")
+                .exchange('exch')
+                    .publish('rout1', "test 1")
+                    .publish('rout2', "test 2")
+                    .publish('rout3', "test 3")
                 ;
 
             connection.on('ready', function(){
@@ -140,9 +144,10 @@ describe('amqp-mock', function(){
                 connection = amqp.createConnection();
 
             scope
-                .publish('exch', 'a.b.c', "test x")
-                .publish('exch', 'a.b.d', "test y")
-                .publish('exch', 'x.y.c', "test z")
+                .exchange('exch')
+                    .publish('a.b.c', "test x")
+                    .publish('a.b.d', "test y")
+                    .publish('x.y.c', "test z")
                 ;
 
             connection.on('ready', function(){
