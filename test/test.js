@@ -21,7 +21,7 @@ describe('amqp-mock', function(){
                 ;
 
             connection.on('ready', function(){
-                connection.exchange('exch2', {type:'fanout'}, function(exchange){
+                connection.exchange('exch2', {type:'direct'}, function(exchange){
                     connection.queue('', function(queue){
 
                         queue.bind(exchange.name, 'rout');
@@ -48,13 +48,12 @@ describe('amqp-mock', function(){
             }, 1);
         });
 
-        it('should publish messages with different routing keys', function(done){
+        it('should publish messages with different routing keys through fanout exchange', function(done){
 
             var scope = mockamqp(),
                 spy = sinon.spy(),
                 connection = amqp.createConnection();
 
-            // publish 3 mock messages with different routing keys
             scope
                 .publish('exch', 'rout1', "test 1")
                 .publish('exch', 'rout2', "test 2")
@@ -65,7 +64,49 @@ describe('amqp-mock', function(){
                 connection.exchange('exch', {type:'fanout'}, function(exchange){
                     connection.queue('', function(queue){
 
-                        // bind just to 2 routing keys.
+                        queue.bind(exchange.name, 'rout3');
+                        queue.bind(exchange.name, 'rout1');
+
+                        queue.subscribe({}, function(message){
+                            spy(message.data);
+                        });
+                    });
+                });
+            });
+
+            connection.on('error', function(err){
+                throw err;
+            });
+
+            setTimeout(function(){
+
+                spy.should.have.been.calledThrice;
+                spy.should.have.been.calledWith('test 1');
+                spy.should.have.been.calledWith('test 2');
+                spy.should.have.been.calledWith('test 3');
+
+                scope.done();
+                done();
+
+            }, 1);
+        });
+
+        it('should publish messages with different routing keys through direct exchange', function(done){
+
+            var scope = mockamqp(),
+                spy = sinon.spy(),
+                connection = amqp.createConnection();
+
+            scope
+                .publish('exch', 'rout1', "test 1")
+                .publish('exch', 'rout2', "test 2")
+                .publish('exch', 'rout3', "test 3")
+                ;
+
+            connection.on('ready', function(){
+                connection.exchange('exch', {type:'direct'}, function(exchange){
+                    connection.queue('', function(queue){
+
                         queue.bind(exchange.name, 'rout3');
                         queue.bind(exchange.name, 'rout1');
 
@@ -85,6 +126,48 @@ describe('amqp-mock', function(){
                 spy.should.have.been.calledTwice;
                 spy.should.have.been.calledWith('test 1');
                 spy.should.have.been.calledWith('test 3');
+
+                scope.done();
+                done();
+
+            }, 1);
+        });
+
+        it('should publish messages with different routing keys through topic exchange', function(done){
+
+            var scope = mockamqp(),
+                spy = sinon.spy(),
+                connection = amqp.createConnection();
+
+            scope
+                .publish('exch', 'a.b.c', "test x")
+                .publish('exch', 'a.b.d', "test y")
+                .publish('exch', 'x.y.c', "test z")
+                ;
+
+            connection.on('ready', function(){
+                connection.exchange('exch', {type:'topic'}, function(exchange){
+                    connection.queue('', function(queue){
+
+                        queue.bind(exchange.name, '*.*.c');
+                        queue.bind(exchange.name, 'x.*.*');
+
+                        queue.subscribe({}, function(message){
+                            spy(message.data);
+                        });
+                    });
+                });
+            });
+
+            connection.on('error', function(err){
+                throw err;
+            });
+
+            setTimeout(function(){
+
+                spy.should.have.been.calledTwice;
+                spy.should.have.been.calledWith('test x');
+                spy.should.have.been.calledWith('test z');
 
                 scope.done();
                 done();
