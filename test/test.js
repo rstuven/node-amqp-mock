@@ -7,6 +7,21 @@ chai.use(require('sinon-chai'));
 
 describe('amqp-mock', function(){
 
+    describe('preamble', function(){
+
+        it('should make sure AMPQ server is not available', function(done){
+            var connection = amqp.createConnection();
+            connection.on('error', function(err){
+                err.code.should.equal('ECONNREFUSED');
+                done();
+            });
+            connection.on('ready', function(){
+                throw new Error('Make sure your AMQP server is not available.');
+            });
+        });
+
+    });
+
     describe('#publish', function(){
 
         it('should publish messages with different exchanges', function(done){
