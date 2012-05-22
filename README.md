@@ -1,6 +1,7 @@
 # node-amqp-mock
 
-This is a mocking and expectations library for node-amqp
+This is a mocking and expectations library
+for [node-amqp](https://github.com/postwait/node-amqp),
 inspired by [nock](https://github.com/flatiron/nock).
 
 ## Usage
