@@ -1,6 +1,6 @@
 {
   "name": "amqp-mock",
-  "author": "Ricardo Stuven <rstuven@gmail.com>",
+  "author": "Ricardo! Stuven <rstuven@gmail.com>",
   "description": "AMQP mocking and expectations library",
   "version": "0.1.2-1",
   "repository": {
