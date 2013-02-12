@@ -2,7 +2,7 @@
   "name": "amqp-mock",
   "author": "Ricardo Stuven <rstuven@gmail.com>",
   "description": "AMQP mocking and expectations library",
-  "version": "0.1.3-1",
+  "version": "0.1.4-1",
   "repository": {
     "type": "git",
     "url": "git://github.com/rstuven/node-amqp-mock.git"
@@ -12,7 +12,7 @@
     "test": "mocha -R spec"
   },
   "dependencies": {
-    "amqp": "=0.1.3"
+    "amqp": "=0.1.4"
   },
   "devDependencies": {
     "mocha": "*",
